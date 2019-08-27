@@ -84,6 +84,15 @@
                 <FormItem label="*证据来源:"  style="width: 435px">
                     <Input v-model="addFormItem.evidenceWhere" placeholder="请输入证据来源"  ></Input>
                 </FormItem>
+                <FormItem label="*证据类型:"  style="width: 435px">
+                    <Select v-model="addFormItem.evidenceType"  style="width: 100%;vertical-align:middle;">
+                        <Option value="1" >申请书</Option>
+                        <Option value="2" >起诉状</Option>
+                        <Option value="3" >答辩状</Option>
+                        <Option value="4" >异议书</Option>
+                        <Option value="5" >证人证词</Option>
+                    </Select>
+                </FormItem>
                 <FormItem label="*附件:"  style="width: 435px">
                     <!-- <myUpload
                       style="display: inline-block;margin-left:10px;"
@@ -401,7 +410,8 @@ export default {
                                 evidenceName:'',
                                 pageNum:'',
                                 evidenceObject:'',
-                                evidenceWhere:''
+                                evidenceWhere:'',
+                                evidenceType:''
                           };
                           document.getElementById("upfil").value = "";
                           this.files = [];
@@ -602,6 +612,7 @@ export default {
         }
     },
     submit(){
+      console.log(this.addFormItem.evidenceType);
       if(this.addFormItem.evidenceName == ""){
             this.$Message.info('证据名称不能为空');
             this.changeLoading();
@@ -614,6 +625,11 @@ export default {
         }
         if(this.addFormItem.evidenceWhere == ""){
             this.$Message.info('证据来源不能为空');
+            this.changeLoading();
+            return false;
+        }
+        if(this.addFormItem.evidenceType == ''){
+            this.$Message.info('证据类型不能为空');
             this.changeLoading();
             return false;
         }
@@ -630,6 +646,7 @@ export default {
           this.addFormItem.evidenceName,
           this.addFormItem.evidenceWhere,
           this.addFormItem.pageNum,
+          this.addFormItem.evidenceType,
           this.evidenceId,
           liniId
         ).then(res => {
