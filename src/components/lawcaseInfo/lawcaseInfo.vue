@@ -147,7 +147,7 @@
                   <div v-show="answerLiti">
                     <Card  style="margin-bottom:10px">
                           <p slot="title">
-                              诉讼请求
+                              答辩意见
                               <span class="right-btn" @click="edite">{{ disabled ? '编辑' : '保存' }}</span>
                           </p>
                           <div v-show="this.caseLoading" style="position:absolute;top:0;bottom:0;left:0;right:0;z-index: 99;background: rgba(255,255,255,0.5)">
@@ -155,7 +155,7 @@
                           </div>
                           <Input v-model="opinion" :disabled='disabled' type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="诉讼请求"></Input>
                       </Card>
-                      <Card  style="margin-bottom:10px">
+                      <!-- <Card  style="margin-bottom:10px">
                           <p slot="title">
                               事实与理由
                               <span class="right-btn" @click="edite2">{{ disabled2 ? '编辑' : '保存' }}</span>
@@ -164,7 +164,7 @@
                             <ClipLoader style="position:absolute;top:50%;left:50%;margin-top:-30px;margin-left:-30px" color="#40a9ff" size="60px"/>
                           </div>
                           <Input v-model="factsReasons" :disabled='disabled2' type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="事实与理由"></Input>
-                      </Card>
+                      </Card> -->
                     </div>
                     <div v-show="answerLitiResult" style="text-align:center;min-height:50px"><h3>暂无答辩状</h3></div>
                     <Card  style="margin-bottom:10px" v-for="item in answerList" v-show="!answerLiti">
