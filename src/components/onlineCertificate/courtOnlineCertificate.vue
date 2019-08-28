@@ -166,7 +166,7 @@
                 <FormItem label="*证明对象:" style="width: 435px;">
                     <Input v-model="addFormItem.evidenceObject" placeholder="请输入证明对象"  ></Input>
                 </FormItem>
-                <FormItem label="*证据类型:"  style="width: 435px">
+                <!-- <FormItem label="*证据类型:"  style="width: 435px">
                     <Select v-model="addFormItem.evidenceType"  style="width: 100%;vertical-align:middle;">
                         <Option value="1" >申请书</Option>
                         <Option value="2" >起诉状</Option>
@@ -174,7 +174,7 @@
                         <Option value="4" >异议书</Option>
                         <Option value="5" >证人证词</Option>
                     </Select>
-                </FormItem>
+                </FormItem> -->
                 <FormItem label="有无原件">
                     <RadioGroup v-model="addFormItem.original">
                         <Radio label=1>有</Radio>
@@ -662,11 +662,11 @@ export default {
                 this.changeLoading();
                 return false;
             }
-            if(this.addFormItem.evidenceType == undefined){
-                this.$Message.info('证据类型不能为空');
-                this.changeLoading();
-                return false;
-            }
+            // if(this.addFormItem.evidenceType == undefined){
+            //     this.$Message.info('证据类型不能为空');
+            //     this.changeLoading();
+            //     return false;
+            // }
             if(this.addFormItem.evidenceWhere == ""){
                 this.$Message.info('证据来源不能为空');
                 this.changeLoading();

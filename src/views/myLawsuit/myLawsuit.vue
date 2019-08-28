@@ -84,7 +84,7 @@
                 <FormItem label="*证据来源:"  style="width: 435px">
                     <Input v-model="addFormItem.evidenceWhere" placeholder="请输入证据来源"  ></Input>
                 </FormItem>
-                <FormItem label="*证据类型:"  style="width: 435px">
+                <!-- <FormItem label="*证据类型:"  style="width: 435px">
                     <Select v-model="addFormItem.evidenceType"  style="width: 100%;vertical-align:middle;">
                         <Option value="1" >申请书</Option>
                         <Option value="2" >起诉状</Option>
@@ -92,7 +92,7 @@
                         <Option value="4" >异议书</Option>
                         <Option value="5" >证人证词</Option>
                     </Select>
-                </FormItem>
+                </FormItem> -->
                 <FormItem label="*附件:"  style="width: 435px">
                     <!-- <myUpload
                       style="display: inline-block;margin-left:10px;"
@@ -612,7 +612,6 @@ export default {
         }
     },
     submit(){
-      console.log(this.addFormItem.evidenceType);
       if(this.addFormItem.evidenceName == ""){
             this.$Message.info('证据名称不能为空');
             this.changeLoading();
@@ -628,11 +627,11 @@ export default {
             this.changeLoading();
             return false;
         }
-        if(this.addFormItem.evidenceType == ''){
-            this.$Message.info('证据类型不能为空');
-            this.changeLoading();
-            return false;
-        }
+        // if(this.addFormItem.evidenceType == ''){
+        //     this.$Message.info('证据类型不能为空');
+        //     this.changeLoading();
+        //     return false;
+        // }
         if(this.files.length == 0){
             this.$Message.info('请上传证据文件');
             this.changeLoading();

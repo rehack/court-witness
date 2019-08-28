@@ -153,7 +153,7 @@
                           <div v-show="this.caseLoading" style="position:absolute;top:0;bottom:0;left:0;right:0;z-index: 99;background: rgba(255,255,255,0.5)">
                             <ClipLoader style="position:absolute;top:50%;left:50%;margin-top:-30px;margin-left:-30px" color="#40a9ff" size="60px"/>
                           </div>
-                          <Input v-model="opinion" :disabled='disabled' type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="诉讼请求"></Input>
+                          <Input v-model="opinion" :disabled='disabled' type="textarea" :autosize="{minRows: 2,maxRows: 20}" placeholder="诉讼请求"></Input>
                       </Card>
                       <!-- <Card  style="margin-bottom:10px">
                           <p slot="title">

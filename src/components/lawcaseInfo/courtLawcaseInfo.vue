@@ -146,14 +146,14 @@
                                 <span  style="letter-spacing: 2px;">{{item.opinion}}</span>
                             </Col>
                         </Row>
-                        <Row  style="margin-bottom:5px">
+                        <!-- <Row  style="margin-bottom:5px">
                             <Col span="3" style="text-align: right; padding-right: 5px">
                                事实与理由：
                             </Col>
                             <Col span="19" >
                                 <span  style="letter-spacing: 2px;">{{item.factsReasons}}</span>
                             </Col>
-                        </Row>
+                        </Row> -->
                     </Card>
                     <!-- <Card  style="margin-bottom:10px">
                         
