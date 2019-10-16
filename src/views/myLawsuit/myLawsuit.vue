@@ -84,6 +84,16 @@
                 <FormItem label="*证据来源:"  style="width: 435px">
                     <Input v-model="addFormItem.evidenceWhere" placeholder="请输入证据来源"  ></Input>
                 </FormItem>
+                <FormItem label="*是否有原件:"  style="width: 435px">
+                    <RadioGroup v-model="addFormItem.isOriginal">
+                        <Radio label="1">
+                            <span>是</span>
+                        </Radio>
+                        <Radio label="0">
+                            <span>否</span>
+                        </Radio>
+                    </RadioGroup>
+                </FormItem>
                 <!-- <FormItem label="*证据类型:"  style="width: 435px">
                     <Select v-model="addFormItem.evidenceType"  style="width: 100%;vertical-align:middle;">
                         <Option value="1" >申请书</Option>
@@ -262,7 +272,8 @@ export default {
               evidenceName:'',
               pageNum:'',
               evidenceObject:'',
-              evidenceWhere:''
+              evidenceWhere:'',
+              isOriginal:'',
           },
           fileN:"",
             file:"",
@@ -647,7 +658,8 @@ export default {
           this.addFormItem.pageNum,
           this.addFormItem.evidenceType,
           this.evidenceId,
-          liniId
+          liniId,
+          this.addFormItem.isOriginal
         ).then(res => {
             if(res.data.state == 100){
                   this.$Message.success(res.data.message);

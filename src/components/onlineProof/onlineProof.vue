@@ -67,6 +67,16 @@
                 <FormItem label="*证据来源:"  style="width: 435px">
                     <Input v-model="addFormItem.evidenceWhere" placeholder="请输入证据来源"  ></Input>
                 </FormItem>
+                <FormItem label="*有无原件:"  style="width: 435px">
+                    <RadioGroup v-model="addFormItem.original">
+                        <Radio label="1">
+                            <span>有</span>
+                        </Radio>
+                        <Radio label="0">
+                            <span>无</span>
+                        </Radio>
+                    </RadioGroup>
+                </FormItem>
                 <FormItem label="*附件:"  style="width: 435px">
                     <!-- <myUpload
                       style="display: inline-block;margin-left:10px;"
@@ -145,6 +155,7 @@ export default {
                 pageNum:'',
                 evidenceObject:'',
                 evidenceWhere:'',
+                original:'',
                 evidenceType:''
             },
             fileColumns:[
@@ -378,6 +389,7 @@ export default {
                                         this.addFormItem.evidenceWhere = res.data.result.source;
                                         this.addFormItem.pageNum = res.data.result.pageno;
                                         this.fileN = res.data.result.fileName;
+                                        this.addFormItem.original = res.data.original == true ? '1' : '0';
                                         res.data.result.file.map(item => {
                                             const data ={
                                                 name:item.fileName,
@@ -505,20 +517,28 @@ export default {
             
         },
         getFile(event){
-            this.file = event.target.files[0];
-            for(var i=0;i<this.fileNlist.length;i++){
-                if(this.file.name==this.fileNlist[i]){
-                    return false;
-                }
-            }
-            this.files.push(this.file)
-            this.fileN = this.file.name;
-            var datas = {
-                name:this.file.name,
+            this.files.splice(0,1,event.target.files[0]);
+            let datas = {
+                name:this.files[0].name,
                 id:''
             }
-            this.fileNlist.push(datas);
-            console.log(this.files);
+            this.fileNlist.splice(0,1,datas);
+            console.log(this.fileNlist,this.files);
+            // this.file = event.target.files[0];
+            // console.log(this.file);
+            // for(var i=0;i<this.fileNlist.length;i++){
+            //     if(this.file.name==this.fileNlist[i]){
+            //         return false;
+            //     }
+            // }
+            // this.files.push(this.file)
+            // this.fileN = this.file.name;
+            // var datas = {
+            //     name:this.file.name,
+            //     id:''
+            // }
+            // this.fileNlist.push(datas);
+            // console.log(this.files);
         },
         delFile(name,id){
             if(id != ''){
@@ -684,7 +704,8 @@ export default {
             this.addFormItem.pageNum,
             this.addFormItem.evidenceType,
             this.evidenceId,
-            liniId
+            liniId,
+            this.addFormItem.original
           ).then(res => {
               if(res.data.state == 100){
                   if(this.evidenceId == ""){

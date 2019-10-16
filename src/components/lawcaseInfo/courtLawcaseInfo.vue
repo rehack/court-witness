@@ -140,7 +140,7 @@
                     <span  class="ygBtn" style="margin-left:10px;margin-bottom:10px">{{item.bgStatus}}</span> <span  style="margin-left:10px">{{item.bgName}}</span>                      
                         <Row  style="margin-bottom:5px">
                             <Col span="3" style="text-align: right; padding-right: 5px">
-                               诉讼请求：
+                               答辩意见：
                             </Col>
                             <Col span="19" >
                                 <span  style="letter-spacing: 2px;">{{item.opinion}}</span>

@@ -271,21 +271,45 @@
                 <Button @click="cloaseMod"  type="dashed" size="large">关闭</Button>
             </div>
         </Modal>
+        <!-- 查看并审核附件 -->
+        <Modal
+            v-model="viewEvidence"
+            title="查看"
+            :mask-closable="false"
+            :styles="{top: '20px'}"
+            :width="eviWidth"
+            >
+            <div class="components-container">
+              <zh-viewer :viewerId="'1'" :fileUrls="filePathAry"></zh-viewer>
+            </div>
+            <div slot="footer">
+                <Button @click="checkEvidenceMethod" type="primary" size="large" v-if="isChecked == true">点击确认审核</Button>
+                <Button @click="viewEvidence = false"   type="dashed" size="large">关闭</Button>
+            </div>
+        </Modal>
     </div>
 </template>
 <script>
 import myUpload from '@/components/upload';
-import { delEvidence, addrevert,getReverts, getLiti, editEvi } from "@/api/witness/lawcaseInfo.js";
+import { delEvidence, addrevert,getReverts, getLiti, editEvi,checkEvidence } from "@/api/witness/lawcaseInfo.js";
 import expandRow from '@/components/tableExpand/courtTableExpand.vue';
+import ZhViewer from "@/components/moreFileViewer/moreFileViewer.vue";
 export default {
     components: {
         myUpload,
-        expandRow
+        expandRow,
+        ZhViewer
     },
     created: function() {
     },
     data() {
         return{
+            viewEvidence:false,
+            filePathAry:[],
+            isChecked:false,
+            eviId:'',
+            eviWidth:window.innerWidth - 430,
+
             evidenceId:"",
             reasonContent:"",
             fileNlist:[],
@@ -378,24 +402,28 @@ export default {
                                             this.$Message.info("暂无附件");
                                             return false;
                                         }
-                                        // 创建隐藏的可下载链接
-                                        var eleLink = document.createElement("a");
-                                        var strs = fileStr.split("/");
-                                        // for (var i = 0; i < strs.length; i++) {
-                                        //     if (i == strs.length - 1) {
-                                        //     var filename = strs[i];
-                                        //     }
-                                        // }
-                                        var filename = params.row.fileName;
-                                        eleLink.download = filename;
-                                        eleLink.style.display = "none";
-                                        // 字符内容转变成blob地址
-                                        eleLink.href = fileStr;
-                                        // 触发点击
-                                        document.body.appendChild(eleLink);
-                                        eleLink.click();
-                                        // 然后移除
-                                        document.body.removeChild(eleLink);
+                                        if(fileStr.indexOf("http") != -1){
+                                            window.open(fileStr)
+                                        }else{
+                                            // 创建隐藏的可下载链接
+                                            var eleLink = document.createElement("a");
+                                            var strs = fileStr.split("/");
+                                            // for (var i = 0; i < strs.length; i++) {
+                                            //     if (i == strs.length - 1) {
+                                            //     var filename = strs[i];
+                                            //     }
+                                            // }
+                                            var filename = params.row.fileName;
+                                            eleLink.download = filename;
+                                            eleLink.style.display = "none";
+                                            // 字符内容转变成blob地址
+                                            eleLink.href = fileStr;
+                                            // 触发点击
+                                            document.body.appendChild(eleLink);
+                                            eleLink.click();
+                                            // 然后移除
+                                            document.body.removeChild(eleLink);
+                                        }
                                     }
                                 }
                                 },
@@ -539,6 +567,11 @@ export default {
                 align: "center"
               },
               {
+                title: "是否已审核",
+                key: "isEviChecked",
+                align: "center"
+              },
+              {
                 title: "提交时间",
                 key: "proveTime",
                 width: 190,
@@ -577,6 +610,53 @@ export default {
                             },
                             ""
                         ),
+                        h(
+                            "Button",
+                            {
+                            props: {
+                                type: "text",
+                                size: "small"
+                            },
+                            style: {
+                                'padding-left':'3px'
+                            },
+                            on: {
+                                click: () => {//查看并审核证据
+                                    console.log(params);
+                                    const fileStr = params.row.fileL == null ? '' : params.row.fileL[0].fileAddr;
+                                    console.log(fileStr);
+                                   this.eviId = params.row.id;
+                                    if(fileStr == null){
+                                        this.$Message.info("暂无附件");
+                                        return false;
+                                    }
+                                    this.viewEvidence = true;
+                                    this.isChecked = params.row.isEviChecked == "已审核" ? false : true;//改变审核按钮状态
+                                    this.filePathAry = [];
+                                    this.filePathAry.push(fileStr);
+                                    return false;
+                                    // 创建隐藏的可下载链接
+                                    var eleLink = document.createElement("a");
+                                    var strs = fileStr.split("/");
+                                    for (var i = 0; i < strs.length; i++) {
+                                        if (i == strs.length - 1) {
+                                        var filename = strs[i];
+                                        }
+                                    }
+                                    eleLink.download = filename;
+                                    eleLink.style.display = "none";
+                                    // 字符内容转变成blob地址
+                                    eleLink.href = fileStr;
+                                    // 触发点击
+                                    document.body.appendChild(eleLink);
+                                    eleLink.click();
+                                    // 然后移除
+                                    document.body.removeChild(eleLink);
+                                }
+                            }
+                            },
+                            '查看'
+                        )
                     ]);
                 }
               },
@@ -637,6 +717,35 @@ export default {
       revertsList:Array
     },
     methods:{
+        checkEvidenceMethod(){//证据审核
+            this.$Modal.confirm({
+                title: '提示',
+                content: '是否确认审核？',
+                okText: '是',
+                closable:true,
+                cancelText: '否',
+                onOk: () => {
+                    checkEvidence(this.eviId).then(res => {
+                        if(res.data.state == 100){
+                            this.$Message.success(res.data.message);
+                            this.isChecked = false;
+                            setTimeout(() => {//延迟一秒后再调用重新渲染PDF文件
+                                this.filePathAry = [];
+                                this.filePathAry.push(res.data.address);
+                            },1000)
+                            this.getR();
+                        }else{
+                            this.$Message.warning(res.data.message);
+                        }
+                    }).catch(error => {
+                        this.$Message.warning('网络错误，请刷新重试！');
+                    })
+                },
+                onCancel: () => {
+                    
+                }
+            });
+        },
         changeLoading () {
             this.loading = false;
             this.$nextTick(() => {
@@ -1059,6 +1168,7 @@ export default {
                                 data2.dsrName = newArr[i].dsrName;
                                 data2.fileL = item.file;
                                 data2.where = item.source;
+                                data2.isEviChecked = item.eviChecked == true ? '已审核' : '未审核';
                                 data2.isSameSite = item.isSameSite;
                                 data2.peopleNum = item.reverts.length;
                                 arySmall.push(data2);

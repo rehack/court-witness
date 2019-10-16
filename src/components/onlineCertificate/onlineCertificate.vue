@@ -374,24 +374,29 @@ export default {
                                             this.$Message.info("暂无附件");
                                             return false;
                                         }
-                                        // 创建隐藏的可下载链接
-                                        var eleLink = document.createElement("a");
-                                        var strs = fileStr.split("/");
-                                        // for (var i = 0; i < strs.length; i++) {
-                                        //     if (i == strs.length - 1) {
-                                        //     var filename = strs[i];
-                                        //     }
-                                        // }
-                                        var filename = params.row.fileName;
-                                        eleLink.download = filename;
-                                        eleLink.style.display = "none";
-                                        // 字符内容转变成blob地址
-                                        eleLink.href = fileStr;
-                                        // 触发点击
-                                        document.body.appendChild(eleLink);
-                                        eleLink.click();
-                                        // 然后移除
-                                        document.body.removeChild(eleLink);
+                                        if(fileStr.indexOf("http") != -1){
+                                            window.open(fileStr)
+                                        }else{
+                                             // 创建隐藏的可下载链接
+                                            var eleLink = document.createElement("a");
+                                            var strs = fileStr.split("/");
+                                            // for (var i = 0; i < strs.length; i++) {
+                                            //     if (i == strs.length - 1) {
+                                            //     var filename = strs[i];
+                                            //     }
+                                            // }
+                                            var filename = params.row.fileName;
+                                            eleLink.download = filename;
+                                            eleLink.style.display = "none";
+                                            // 字符内容转变成blob地址
+                                            eleLink.href = fileStr;
+                                            // 触发点击
+                                            document.body.appendChild(eleLink);
+                                            eleLink.click();
+                                            // 然后移除
+                                            document.body.removeChild(eleLink);
+                                        }
+                                       
                                     }
                                 }
                                 },

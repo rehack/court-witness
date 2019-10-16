@@ -257,3 +257,17 @@ export function getEviById (lawCaseId, evidenceId) {
         params
     });
 }
+
+/**
+ * 原件核对接口
+ */
+export function checkEvidence (eviId) {
+    const params = {
+        eviId,
+    }
+    return service({
+        url: '/qtw/reverts/revertsCheck.jhtml',
+        method: 'GET',
+        params
+    });
+}
