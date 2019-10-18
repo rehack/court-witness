@@ -271,3 +271,17 @@ export function checkEvidence (eviId) {
         params
     });
 }
+
+/**
+ * 更改质证证据原件状态
+ */
+export function changeOriginal (eviId,oriType,newOriType) {
+    const params = {
+        eviId,oriType,newOriType
+    }
+    return service({
+        url: '/qtw/reverts/changeOriginal.jhtml',
+        method: 'GET',
+        params
+    });
+}

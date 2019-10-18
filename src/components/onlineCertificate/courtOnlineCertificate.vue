@@ -287,11 +287,36 @@
                 <Button @click="viewEvidence = false"   type="dashed" size="large">关闭</Button>
             </div>
         </Modal>
+        <Modal
+        v-model="filesModal"
+        width="560px"
+        :mask-closable="false"
+        
+        title="有无原件审核">
+        <div >
+            <Form  :label-width="160" inline >
+                <FormItem label="有无原件：" style="width: 505px;">
+                    <RadioGroup v-model="originalSh" >
+                        <Radio label="0">
+                            <span>无原件</span>
+                        </Radio>
+                        <Radio label="1">
+                            <span>有原件</span>
+                        </Radio>
+                    </RadioGroup>
+                </FormItem>
+            </Form>
+        </div>
+        <div slot="footer"> 
+            <Button @click="filesModal = false"  type="dashed" size="large">关闭</Button>
+            <Button @click="subOri" :loading="filaeLoading"  type="primary" size="large">提交</Button>
+        </div>
+    </Modal>
     </div>
 </template>
 <script>
 import myUpload from '@/components/upload';
-import { delEvidence, addrevert,getReverts, getLiti, editEvi,checkEvidence } from "@/api/witness/lawcaseInfo.js";
+import { delEvidence, addrevert,getReverts, getLiti, editEvi,checkEvidence,changeOriginal } from "@/api/witness/lawcaseInfo.js";
 import expandRow from '@/components/tableExpand/courtTableExpand.vue';
 import ZhViewer from "@/components/moreFileViewer/moreFileViewer.vue";
 export default {
@@ -304,6 +329,10 @@ export default {
     },
     data() {
         return{
+            filesModal:false,
+            originalSh:'',
+            fileStatus:true,
+            filaeLoading:false,
             viewEvidence:false,
             filePathAry:[],
             isChecked:false,
@@ -567,9 +596,39 @@ export default {
                 align: "center"
               },
               {
+                title: "是否有原件",
+                key: "isOrigin",
+                align: "center",
+                render: (h, params) => {
+                    return h("div", [
+                        h(
+                            "Button",
+                            {
+                            props: {
+                                type: "text",
+                                size: "small"
+                            },
+                            style: {
+                                color:'#10ADF5'
+                            },
+                            on: {
+                                click: () => {//查看并审核证据
+                                    this.eviId = params.row.id;
+                                    this.fileStatus = params.row.isOrigin;
+                                    this.filesModal = true;
+                                    this.originalSh = params.row.isOrigin == true ? '1' : '0';
+                                }
+                            }
+                            },
+                            params.row.isOrigin == true ? '有' : '无'
+                        )
+                    ]);
+                }
+              },
+              {
                 title: "是否已审核",
                 key: "isEviChecked",
-                align: "center"
+                align: "center",
               },
               {
                 title: "提交时间",
@@ -717,6 +776,22 @@ export default {
       revertsList:Array
     },
     methods:{
+        subOri(){//有无原件状态变更
+            const newStatus = this.originalSh == '1' ? true : false;
+            this.filaeLoading = true;
+            changeOriginal(this.eviId,this.fileStatus,newStatus).then(res => {
+                this.filaeLoading = false;
+                this.filesModal = false;
+                if(res.data.state == 100){
+                    this.$Message.success(res.data.message);
+                    this.getR();
+                }else{
+                    this.$Message.warning(res.data.message);
+                }
+            }).catch(error => {
+                this.$Message.warning('网络错误，请刷新重试！');
+            })
+        },
         checkEvidenceMethod(){//证据审核
             this.$Modal.confirm({
                 title: '提示',
@@ -1054,6 +1129,7 @@ export default {
                     for(var i=0;i<newArr.length;i++){
                         var arySmall = [];
                         res.data.result.map((item, index) => {
+
                             var colorState = 0;
                             var ty1 = 0;
                             var ty2 = 0;
@@ -1169,6 +1245,7 @@ export default {
                                 data2.fileL = item.file;
                                 data2.where = item.source;
                                 data2.isEviChecked = item.eviChecked == true ? '已审核' : '未审核';
+                                data2.isOrigin = item.original;
                                 data2.isSameSite = item.isSameSite;
                                 data2.peopleNum = item.reverts.length;
                                 arySmall.push(data2);

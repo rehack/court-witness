@@ -253,6 +253,7 @@ export default {
                                 data2.fileL = item.file;
                                 data2.where = item.source;
                                 data2.isEviChecked = item.eviChecked == true ? '已审核' : '未审核';
+                                data2.isOrigin = item.original;
                                 data2.isSameSite = item.isSameSite;
                                 data2.peopleNum = item.reverts.length;
                                 arySmall.push(data2);
